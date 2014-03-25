@@ -30,6 +30,9 @@ bool EngineCore::init()
 	screen_height = modes[0]->h;
 	screen_width = modes[0]->w;
 
+	if (!Singleton<Board>::getInstance().init())
+		return false;
+
 	return true;
 }
 

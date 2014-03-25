@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <list> 
 #include <vector>
 #include <time.h>
 

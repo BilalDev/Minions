@@ -3,6 +3,7 @@
 
 #include "Singleton.h"
 #include "headers.h"
+#include "Board.h"
 
 class EngineCore : public Singleton<EngineCore>
 {

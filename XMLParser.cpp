@@ -27,32 +27,56 @@ bool XMLParser::parseLevel(std::string file)
 		std::cerr << "Le noeud n'existe pas." << std::endl;
 		return false;
 	}
-	
-	int nb_texture = std::stoi(elem->Attribute("nb_textures"));
-	
-	elem = hdl.FirstChildElement().FirstChildElement().FirstChildElement().Element();
 
+	Board& board = Singleton<Board>::getInstance();
+
+
+	// Set number of tiles x & y
+	board.setNbTiles(Board::NbTiles(std::stoi(elem->Attribute("x")),
+					std::stoi(elem->Attribute("y"))));
+	
+	// Set tile width & height
+	board.setTile(Board::Tile(std::stoi(elem->Attribute("block_size_x")),
+				std::stoi(elem->Attribute("block_size_y"))));
+
+	// Set tileset filename
+	elem = hdl.FirstChildElement().FirstChildElement().FirstChildElement().Element();
 	if (!elem)
 	{
 		std::cerr << "Le noeud n'existe pas." << std::endl;
 		return false;
 	}
+	board.setTileset(elem->Attribute("img"));
+	elem = elem->NextSiblingElement();
 
-	Board& board = Singleton<Board>::getInstance();
-
-	for (int i = 0; i < nb_texture; ++i)
+	// Set properties of tiles
+	for (int i = 0; i < board.getNbTiles().x; ++i)
 	{
-		std::cout << elem->Attribute("img") << std::endl;
-		elem = elem->NextSiblingElement();
+		for (int j = 0; j < board.getNbTiles().y; ++j)
+		{
+			elem = elem->NextSiblingElement();
+		}
 	}
-
+	
+	// Set block caracteristics
+	SDL_Rect rect;
+	rect.y = 0;
+	rect.h = board.getTile().h;
+	rect.w = board.getTile().w;
+	int i = 0;
 	while (elem)
 	{
-		std::cout << "Texture : " << elem->Attribute("texture") << 
-		" X : " << elem->Attribute("x") << " Y : " << elem->Attribute("y") << std::endl;
+		// TODO split with ":" for rect.y
+		rect.x = std::stoi(elem->Attribute("texture")) * board.getTile().w;
+
+		board.getMap().push_back(Board::Block(std::stoi(elem->Attribute("x")),
+								std::stoi(elem->Attribute("y")),
+								rect));
 
 		elem = elem->NextSiblingElement();
+		++i;
 	}
-
+	
+	board.setNbTilesWorld(Board::NbTilesWorld(33, 16));
 	return true;
 }

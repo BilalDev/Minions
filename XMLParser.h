@@ -2,8 +2,9 @@
 #define XMLPARSER_H
 
 #include <tinyxml.h>
-#include "headers.h"
 #include "Board.h"
+#include "headers.h"
+
 
 class XMLParser
 {

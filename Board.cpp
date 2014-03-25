@@ -7,30 +7,19 @@ Board::Board()
 
 Board::~Board()
 {
+	if (tileset)
+		SDL_FreeSurface(tileset);
 }
 
 
 bool Board::init()
 {
+	XMLParser parser;
+
+	if(parser.parseLevel("map/level1.xml") != NULL)
+		return true;
+
 	return false;
-}
-
-
-int Board::getTileW()
-{
-	return this->tile_w;
-}
-
-
-int Board::getTIleH()
-{
-	return this->tile_h;
-}
-
-
-int Board::getNbTilesX()
-{
-	return this->nbTilesX;
 }
 
 
@@ -40,49 +29,72 @@ SDL_Surface* Board::getTileset()
 }
 
 
-std::vector<SDL_Rect, int>* Board::getProps()
+void Board::setTileset(std::string image)
 {
-	return this->props;
+	if (tileset)
+		SDL_FreeSurface(tileset);
+
+	tileset = IMG_Load(image.c_str());
 }
 
 
-unsigned char** Board::getSchema()
+Board::Tile const& Board::getTile()
 {
-	return this->schema;
+	return tile;
 }
 
 
-int Board::getXScroll()
+void Board::setTile(Board::Tile const& tile)
 {
-	return this->xScroll;
+	this->tile.h = tile.h;
+	this->tile.w = tile.w;
 }
 
 
-int Board::getYScroll()
+Board::NbTiles const& Board::getNbTiles()
 {
-	return this->yScroll;
+	return nbTiles;
 }
 
 
-int Board::getNbTilesWorldX()
+void Board::setNbTiles(Board::NbTiles const& nbTiles)
 {
-	return this->nbTilesWorldX;
+	this->nbTiles.x = nbTiles.x;
+	this->nbTiles.y = nbTiles.y;
 }
 
 
-int Board::getNbTilesWorldY()
+Board::Scroll const& Board::getScroll()
 {
-	return this->nbTilesWorldY;
+	return scroll;
 }
 
 
-int Board::getWindowW()
+void Board::setScroll(Board::Scroll const& scroll)
 {
-	return this->window_w;
+	this->scroll.x = scroll.x;
+	this->scroll.y = scroll.y;
+}
+void Board::setScroll(int x, int y)
+{
+	scroll.x = x;
+	scroll.y = y;
+}
+
+Board::NbTilesWorld const& Board::getNbTilesWorld()
+{
+	return nbTilesWorld;
 }
 
 
-int Board::getWindowH()
+void Board::setNbTilesWorld(Board::NbTilesWorld const& nbTilesWorld)
 {
-	return this->window_h;
+	this->nbTilesWorld.x = nbTilesWorld.x;
+	this->nbTilesWorld.y = nbTilesWorld.y;
+}
+
+
+std::list<Board::Block> &Board::getMap()
+{
+	return map;
 }
