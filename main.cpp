@@ -11,7 +11,8 @@ int main(int argc, char** argv)
 	Game game;
 	int mousex, mousey = 0;
 	SDL_Surface *cursor = IMG_Load("resources/cursor.png");
-	SDL_Rect positionCursor;
+	SDL_Rect positionCursor, positionHero = { 0, 0 };
+	bool hasClicked = false;
 
 	if (!engine.init())
 		exit(EXIT_FAILURE);
@@ -26,6 +27,8 @@ int main(int argc, char** argv)
 	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 	SDL_ShowCursor(0);
 
+	Hero h = Hero();
+	game.getHeroes().push_back(h);
 	
 	while (play)
 	{
@@ -41,6 +44,13 @@ int main(int argc, char** argv)
 				positionCursor.x = mousex = event.motion.x;
 				positionCursor.y = mousey = event.motion.y;
 				break;
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_RIGHT)
+				{
+					positionHero.x = event.motion.x;
+					positionHero.y = event.motion.y;
+					hasClicked = true;
+				}
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym)
 				{
@@ -57,11 +67,22 @@ int main(int argc, char** argv)
 
 		// LOGIC
 		game.move_board(mousex, mousey);
-
+		// HERO'S LOGIC
+		for (std::vector<Hero>::iterator hero = game.getHeroes().begin(); hero != game.getHeroes().end(); ++hero)
+		{
+			if (hasClicked)
+				hasClicked = hero->move(positionHero);
+		}
 
 		// RENDER
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		game.display_board(screen);
+		// HERO'S RENDERING
+		for (std::vector<Hero>::iterator hero = game.getHeroes().begin(); hero != game.getHeroes().end(); ++hero)
+		{
+			hero->display(screen);
+		}
+
 		SDL_BlitSurface(cursor, NULL, screen, &positionCursor);
 		SDL_Flip(screen);
 	}

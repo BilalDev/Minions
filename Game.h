@@ -4,6 +4,7 @@
 #include "Board.h"
 #include "EngineCore.h"
 #include "Timer.h"
+#include "Hero.h"
 
 class Game
 {
@@ -20,11 +21,13 @@ public:
 	void display_board(SDL_Surface *screen);
 	void move_board(int x, int y);
 
-	Timer		getTimer();
+	Timer				&getTimer();
+	std::vector<Hero>	&getHeroes();
 
 
 private:
-	Timer		timer;
+	Timer				timer;
+	std::vector<Hero>	heroes;
 };
 
 #endif /* !GAME_H */

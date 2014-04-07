@@ -78,8 +78,14 @@ void Game::move_board(int x, int y)
 }
 
 
-Timer Game::getTimer()
+Timer &Game::getTimer()
 {
 	return timer;
+}
+
+
+std::vector<Hero> &Game::getHeroes()
+{
+	return heroes;
 }
 
